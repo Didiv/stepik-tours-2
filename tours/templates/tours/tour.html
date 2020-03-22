@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{tour.title}}  {{tour.stars}} ★</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container mt-3">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" data-test="logo" href="/">{{title}}</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav" data-test="navigation">
+          {% for departure, departure_name in departures.items %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/departure/{{departure}}" data-test="navlink">Из {{departure_name}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </nav>
+
+
+
+
+    <h1 class="display-3 mt-4" data-test="title">{{tour.title}}  {{tour.stars}} ★</h1>
+
+    <!-- HERO -->
+
+    <p class="lead" data-test="lead"><span data-test="country">{{tour.country}}</span> из <span data-text="departure">{{departure_name}}</span> <span data-text="nights">{{tour.nights}}</span> ночей</p>
+
+    <img data-test="picture" src="{{tour.picture}}" class="w-75" alt="">
+
+    <p class="my-4 w-75" data-test="description">{{tour.description}}</p>
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdDr9yqG4H5x1sDSwqrGQpezkHufIYP6NERxoe3tDW57YLU4w/viewform" class="btn btn-success btn-lg" data-test="buybutton">Купить тур за <span data-test="price">{{tour.price}}</span></a>
+</div>
+
+</body>
+</html>
