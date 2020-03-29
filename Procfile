@@ -1,0 +1,1 @@
+web: gunicorn stepic_tours_2.wsgi

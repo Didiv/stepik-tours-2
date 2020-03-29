@@ -12,7 +12,9 @@ import tours.data as data
 class MainView(View):
 
     def genRandTourList(self, n: int, tours: dict) -> dict:
-
+        '''
+        Return n random tours
+        '''
         result_tours = {}
         keys = tours.keys()
         for _ in range(n):
