@@ -1,3 +1,5 @@
+from random import randint
+
 from django.http import HttpResponseNotFound
 
 from django.shortcuts import render
@@ -8,71 +10,61 @@ import tours.data as data
 
 
 class MainView(View):
-    def get(self, request):
+
+    def genRandTourList(self, n: int, tours: dict) -> dict:
+
+        result_tours = {}
+        keys = tours.keys()
+        for _ in range(n):
+            n = randint(1, len(keys))
+            while n in result_tours:
+                n = randint(1, len(keys))
+            result_tours[n] = tours[n]
+        return result_tours
+
+    def get(self, request) -> render:
 
         return render(
-            request, 'tours/index.html', context={
-                "title": data.title,
-                "subtitle": data.subtitle,
-                "description": data.description,
-                "departures": data.departures,
-                "tours": data.tours,
+            request, 'index.html', context={
+                "tours": self.genRandTourList(6, data.tours),
             }
         )
 
 
 class DepartureView(View):
-    def get(self, request, departure: str):
+    def get(self, request, departure: str) -> render:
 
         if departure not in data.departures:
             return HttpResponseNotFound(
                 f'Вылет из {departure} не поддерживается')
 
-        tours_filtered = dict(
-            filter(
-                lambda x: x[1]['departure'] == departure,
-                data.tours.items()))
-        min_price = min(
-            tours_filtered.values(),
-            key=lambda x: x['price'])['price']
-        max_price = max(
-            tours_filtered.values(),
-            key=lambda x: x['price'])['price']
-        min_nights = min(
-            tours_filtered.values(),
-            key=lambda x: x['nights'])['nights']
-        max_nights = max(
-            tours_filtered.values(),
-            key=lambda x: x['nights'])['nights']
+        tours_filtered = {k: v for k, v in data.tours.items()
+                          if v['departure'] == departure}
+        prices = sorted(tour['price'] for tour in tours_filtered.values())
+        nights = sorted(tour['nights'] for tour in tours_filtered.values())
 
         return render(
-            request, 'tours/departure.html', context={
-                "title": data.title,
-                "subtitle": data.subtitle,
-                "description": data.description,
-                "departures": data.departures,
+            request, 'departure.html', context={
                 "departure": departure,
                 "departure_name": data.departures[departure],
                 "tours": tours_filtered,
-                "min_price": min_price,
-                "max_price": max_price,
-                "min_nights": min_nights,
-                "max_nights": max_nights,
+                "min_price": prices[0],
+                "max_price": prices[-1],
+                "min_nights": nights[0],
+                "max_nights": nights[-1],
             }
         )
 
 
 class TourView(View):
-    def get(self, request, id: int):
+    def get(self, request, id: int) -> render:
 
         if id not in data.tours:
             return HttpResponseNotFound(
                 f'Тур с id {id} нам не известен')
 
         return render(
-            request, 'tours/tour.html', context={
-                "title": data.title,
-                "departures": data.departures,
+            request, 'tour.html', context={
                 "tour": data.tours[id],
                 "departure_name": data.departures[data.tours[id]['departure']]
             }
